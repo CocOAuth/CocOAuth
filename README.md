@@ -36,7 +36,7 @@ let account
 ## Licence
 
 
-This code is released under the [_Apache 2.0 license_](LICENSE.txt).
+This code is released under the [_Apache 2.0 license_](LICENSE).
 
 
 [sample]: https://github.com/p2/OAuth2App
