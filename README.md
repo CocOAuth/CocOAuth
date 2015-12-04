@@ -2,3 +2,9 @@
 
 CocOAuth is an OAuth2 frameworks for iOS written in Swift 2.0.
 
+
+```swift
+
+let account
+
+```
