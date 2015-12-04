@@ -1,6 +1,5 @@
 ![CocOAuth_Logo_262x2632](http://cocoauth.marko-seifert.de/presskit/CocOAuth_Logo_262x262.png)
 
->OAuth2 Authorization Client for iOS
 
 #CocOAuth
 
