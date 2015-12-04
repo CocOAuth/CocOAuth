@@ -35,7 +35,6 @@ let account
 
 ## Licence
 
-
 This code is released under the [_Apache 2.0 license_](LICENSE).
 
 
