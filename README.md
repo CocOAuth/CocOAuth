@@ -33,9 +33,7 @@ let account
 
 ###Notification
 
-
-
-ns
+##Security considerations
 
 ## Licence 
 
