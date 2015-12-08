@@ -10,6 +10,7 @@
 		5EA475201C16C5E20021B1CD /* CocOAuth.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EA4751F1C16C5E20021B1CD /* CocOAuth.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5EA475271C16C5E20021B1CD /* CocOAuth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EA4751C1C16C5E20021B1CD /* CocOAuth.framework */; };
 		5EA4752C1C16C5E20021B1CD /* CocOAuthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA4752B1C16C5E20021B1CD /* CocOAuthTests.swift */; };
+		5EF2F2B41C173FCD000F5227 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF2F2B31C173FCD000F5227 /* Account.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		5EA475261C16C5E20021B1CD /* CocOAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CocOAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EA4752B1C16C5E20021B1CD /* CocOAuthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CocOAuthTests.swift; sourceTree = "<group>"; };
 		5EA4752D1C16C5E20021B1CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5EF2F2B31C173FCD000F5227 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				5EA4751F1C16C5E20021B1CD /* CocOAuth.h */,
+				5EF2F2B31C173FCD000F5227 /* Account.swift */,
 				5EA475211C16C5E20021B1CD /* Info.plist */,
 			);
 			path = CocOAuth;
@@ -194,6 +197,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5EF2F2B41C173FCD000F5227 /* Account.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +312,7 @@
 		5EA475311C16C5E20021B1CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -319,12 +324,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.cocoauth.CocOAuth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		5EA475321C16C5E20021B1CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
