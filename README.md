@@ -14,17 +14,35 @@ CocOAuth is an OAuth2 frameworks for iOS written in Swift 2.0.
 
 ###Integration
 - CocoaPods
+```
+pod 'CocOAuth', :git => 'https://github.com/CocOAuth/CocOAuth.git', :branch => 'development'
+or file based
+pod 'CocOAuth', :path => '../CocOAuth'
+```
 - Import
-
+```swift
+import CocOAuth
+```
 
 ###Configuration
 ```swift
+let conf = CocOAuthConfig(
+	tokenURL: NSURL(string:"<YOUR OAuth2 Identity Provider>")!, 
+	clientID: "<YOUR_CLIENT_ID>", 
+	clientSecret: "<YOUR_CLIENT_SECRET>")
 
-let account
+account = Account(config: conf)
 
 ```
 ###Authentication 
-
+```swift
+@IBAction func login() {
+        
+        account.authenticateWithUsername(self.username.text!, password: self.password.text!, handler: { () -> () in
+            NSLog("authenticate use: ", self.username.text!)
+        })
+    }
+```
 ###Retrive the Access Token
 
 ### User Info
