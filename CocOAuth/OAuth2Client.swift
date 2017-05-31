@@ -146,8 +146,6 @@ internal class OAuth2Client{
         }
     }
     fileprivate func parseError(){
-        /*
-        "{\"access_token\":\"378aa75c0647b6455bf718e8fa3cba995ee7f0b3\",\"expires_in\":3600,\"token_type\":\"Bearer\",\"scope\":null,\"refresh_token\":\"de740ff9b1bba2caa511d4ad05c7ffecd578d059\"}", refreshToken: ""))*/
     }
 
 }
