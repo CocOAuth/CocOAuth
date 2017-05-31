@@ -8,21 +8,21 @@
 
 import Foundation
 
-public class Account{
+open class Account{
     
     public typealias CompletionHandler = () -> ()
     //public typealias DataTaskResult = () throws -> (NSData, NSURLResponse)
     
-    let config:CocOAuthConfig
+    let config:OAuth2Config
     let client:OAuth2Client
     
-    enum CocOAuthError: ErrorType {
-        case InvalidUserCredentialsError
-        case OfflineError
-        case TimeOutError
-        case TechnicalError
+    enum CocOAuthError: Error {
+        case invalidUserCredentialsError
+        case offlineError
+        case timeOutError
+        case technicalError
     }
-    public init(config:CocOAuthConfig){
+    public init(config:OAuth2Config){
         self.config = config
         client = OAuth2Client(config: config)
     }
@@ -38,9 +38,14 @@ public class Account{
     *
     * @param completionHandler block
     */
-    public func authenticateWithUsername(username:String,password :String, handler : CompletionHandler) -> Void {
+    open func authenticateWithUsername(_ username:String,password :String, handler : @escaping CompletionHandler) -> Void {
         
-        client.requestOAuthTokenWithUsername(username, password: password, handler: handler)
+        client.requestOAuthTokenWithUsername(username, password: password) { (result, error) in
+            
+            print(result)
+            print(error)
+            handler()
+        }
         
     }
 }

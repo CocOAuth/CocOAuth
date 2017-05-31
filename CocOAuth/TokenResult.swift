@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+struct TokenResult {
+    let accessToken:String
+    let refreshToken:String?
+    let expiresIn:Int
+}

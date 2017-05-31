@@ -8,31 +8,68 @@
 
 import Foundation
 
+internal typealias OAut2hCompletionHandler = (TokenResult?, Error?) -> ()
+
 internal class OAuth2Client{
     
-    let config:CocOAuthConfig
+    let config:OAuth2Config
     
-    internal typealias OAuth2CompletionHandler = () -> ()
     
-    internal init(config:CocOAuthConfig){
+    
+    internal init(config:OAuth2Config){
         self.config = config
     }
     
     /**
     * Performs the OAut2 access token request with resource owner password credentials.
     * This method is asynchronous. Use the completionHandler closures to handle success or error.
-    * The client id and secret and the scopes are part oft the {@link TODO}.
+    * The client id and secret and the scopes are part oft the {@link CocOAuthConfig}.
     * @param username the user id
     * @param password the user´s password
     * @param completionHandler closures
     */
-    internal func requestOAuthTokenWithUsername(username: String, password:String, handler : OAuth2CompletionHandler) -> Void {
+    internal func requestOAuthTokenWithUsername(_ username: String, password:String, handler : @escaping OAut2hCompletionHandler) -> Void {
         
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        let session = NSURLSession(configuration: configuration)
+        let bodyString = "grant_type=password&username=\(username)&password=\(password)"
+        requestOAuthTokenWithBody(body: bodyString, handler:handler);
+    }
+    /**
+     * Performs the OAut2 access token request with client credentials.
+     * This method is asynchronous. Use the completionHandler block to handle success or error.
+     * The client credentials and the scopes are part oft the {@link CocOAuthConfig}.
+     *
+     * @param completionHandler block
+     */
+    internal func requestOAuthToken(handler : @escaping OAut2hCompletionHandler){
+        let bodyString = "grant_type=client_credentials"
+        requestOAuthTokenWithBody(body: bodyString, handler: handler);
+    }
+    /**
+     * Performs the OAut2 access token request with the authorization code.
+     * This method is asynchronous. Use the completionHandler block to handle success or error.
+     * The client id and secret and the scopes are part oft the {@link CocOAuthConfig}.
+     * @param authoritazionCode the authorization code from a third party (or internal) identity provider
+     */
+    internal func requestOAuthTokenWithCode(authoritazionCode:String, handler : OAut2hCompletionHandler){
         
-        let request = NSMutableURLRequest(URL: config.tokenURL)
+    }
+    /**
+     * Performs the OAut2 access token request with the refresh token.
+     * This method is asynchronous. Use the completionHandler block to handle success or error.
+     * The client id and secret and the scopes are part oft the {@link TSOAuth2Configuration}.
+     * @param authcode the authorization code from a third party (or internal) identity provider
+     * @param completionHandler block
+     */
+    internal func requestOAuthTokenWithRefreshToken(refreshToken: String, handler : @escaping OAut2hCompletionHandler){
         
+        let bodyString = "grant_type=refresh_token&refresh_token=\(refreshToken)"
+        requestOAuthTokenWithBody(body: bodyString,handler: handler);
+    }
+    // MARK mark - private methods
+    fileprivate func requestOAuthTokenWithBody(body:String, handler : @escaping OAut2hCompletionHandler){
+    
+        let session = URLSession.shared//(configuration: configuration)
+        let request = NSMutableURLRequest(url: config.tokenURL)
         
         // Authorization header with client credentials
         
@@ -41,41 +78,76 @@ internal class OAuth2Client{
         
         request.addValue("application/x-www-form-urlencoded;charset=UTF-8", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField:"Accept")
-        request.HTTPMethod = "POST"
+        request.httpMethod = "POST"
         
-        
-        let bodyString = "grant_type=password&username=\(username)&password=\(password)"
-        NSLog("request: \(bodyString)\\n\(request)")
-        request.HTTPBody = bodyString.dataUsingEncoding(NSUTF8StringEncoding)
-        
-        let task = session.dataTaskWithRequest(request) {
-            data, response, error in
-            
-            if let httpResponse = response as? NSHTTPURLResponse {
-                if httpResponse.statusCode != 200 {
-                    NSLog("response was not 200: \(response)")
-                    //return
-                }
-                let datastring = NSString(data:data!, encoding:NSUTF8StringEncoding) as String?
-                NSLog("response was: \(datastring)")
+        var requestBody = body
+        if let scopes = config.scopes{
+            if scopes.count > 0 {
+                let scopeBody = scopes.joined(separator: " ")
+                requestBody += "&scope="
+                requestBody += scopeBody
             }
-            if (error != nil) {
-                NSLog("error submitting request: \(error)")
-                //return
+        }
+        request.httpBody = body.data(using: String.Encoding.utf8)
+        
+        let task = session.dataTask(with: request as URLRequest) { data, response, error in
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode != 200 {
+                    let err = OAuth2Error(errorMessage:String(format: "HTTP Code: %d", httpResponse.statusCode), kind:.serverError, error:nil)
+                    handler(nil, err)
+                }
+                if let d = data{
+                    do{
+                        let tokenResult = try self.parseDate(data: d)
+                        handler(tokenResult, nil)
+                    } catch let error{
+                        handler(nil, error)
+                    }
+                }
+                
+                
+            }
+            if let e = error  {
+                let err = OAuth2Error(errorMessage:e.localizedDescription, kind:.internalError, error:e)
+                handler(nil, err)
             }
         }
         task.resume()
-    
     }
     
-    // MARK mark - private methods
-    
-    private func _createAuthorizationHeader() -> (String) {
+    fileprivate func _createAuthorizationHeader() -> (String) {
         
         let authCredentials = "\(config.clientID):\(config.clientSecret)"
-        let utf8str = authCredentials.dataUsingEncoding(NSUTF8StringEncoding)
-        let base64String = utf8str?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+        let utf8str = authCredentials.data(using: String.Encoding.utf8)
+        let base64String = utf8str?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
         return "Basic \(base64String!)";
+    }
+    fileprivate func parseDate(data:Data) throws -> TokenResult{
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+            
+            let jsonDic = jsonObject as! [String:Any]
+            if let accessToken = jsonDic["access_token"]{
+                var refreshToken:String? = nil
+                if let rToken = jsonDic["refresh_token"] as? String{
+                    refreshToken = rToken
+                }
+                var expiresIn:Int = 0
+                if let expIn = jsonDic["expires_in"] as? Int{
+                    expiresIn = expIn
+                }
+                return TokenResult(accessToken: accessToken as! String, refreshToken: refreshToken, expiresIn:expiresIn)
+            }
+            throw OAuth2Error(errorMessage: "unable to parse access token", kind: .unsupportedResponseType, error: nil)
+        }
+        catch let error {
+            throw OAuth2Error(errorMessage: "unable to parse the payload", kind: .unsupportedResponseType, error: error)
+        }
+    }
+    fileprivate func parseError(){
+        /*
+        "{\"access_token\":\"378aa75c0647b6455bf718e8fa3cba995ee7f0b3\",\"expires_in\":3600,\"token_type\":\"Bearer\",\"scope\":null,\"refresh_token\":\"de740ff9b1bba2caa511d4ad05c7ffecd578d059\"}", refreshToken: ""))*/
     }
 
 }
