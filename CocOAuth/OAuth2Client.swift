@@ -93,24 +93,24 @@ internal class OAuth2Client{
         let task = session.dataTask(with: request as URLRequest) { data, response, error in
             
             if let httpResponse = response as? HTTPURLResponse {
+                
                 if httpResponse.statusCode != 200 {
-                    let err = OAuth2Error(errorMessage:String(format: "HTTP Code: %d", httpResponse.statusCode), kind:.serverError, error:nil)
-                    handler(nil, err)
-                }
-                if let d = data{
+                    let error = self.parseError(data: data, status:httpResponse.statusCode)
+                    handler(nil, error)
+                } else {
                     do{
-                        let tokenResult = try self.parseDate(data: d)
+                        let tokenResult = try self.parseDate(data: data)
                         handler(tokenResult, nil)
                     } catch let error{
                         handler(nil, error)
                     }
                 }
-                
-                
+                return
             }
             if let e = error  {
                 let err = OAuth2Error(errorMessage:e.localizedDescription, kind:.internalError, error:e)
                 handler(nil, err)
+                return
             }
         }
         task.resume()
@@ -123,29 +123,61 @@ internal class OAuth2Client{
         let base64String = utf8str?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
         return "Basic \(base64String!)";
     }
-    fileprivate func parseDate(data:Data) throws -> TokenResult{
-        do {
-            let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
-            
-            let jsonDic = jsonObject as! [String:Any]
-            if let accessToken = jsonDic["access_token"]{
-                var refreshToken:String? = nil
-                if let rToken = jsonDic["refresh_token"] as? String{
-                    refreshToken = rToken
+    fileprivate func parseDate(data:Data?) throws -> TokenResult{
+
+        if let d = data{
+            do {
+                let jsonObject = try JSONSerialization.jsonObject(with: d, options: [])
+                
+                let jsonDic = jsonObject as! [String:Any]
+                if let accessToken = jsonDic["access_token"]{
+                    var refreshToken:String? = nil
+                    if let rToken = jsonDic["refresh_token"] as? String{
+                        refreshToken = rToken
+                    }
+                    var expiresIn:Int = 0
+                    if let expIn = jsonDic["expires_in"] as? Int{
+                        expiresIn = expIn
+                    }
+                    return TokenResult(accessToken: accessToken as! String, refreshToken: refreshToken, expiresIn:expiresIn)
                 }
-                var expiresIn:Int = 0
-                if let expIn = jsonDic["expires_in"] as? Int{
-                    expiresIn = expIn
-                }
-                return TokenResult(accessToken: accessToken as! String, refreshToken: refreshToken, expiresIn:expiresIn)
+                throw OAuth2Error(errorMessage: "unable to parse access token", kind: .unsupportedResponseType, error: nil)
             }
-            throw OAuth2Error(errorMessage: "unable to parse access token", kind: .unsupportedResponseType, error: nil)
-        }
-        catch let error {
-            throw OAuth2Error(errorMessage: "unable to parse the payload", kind: .unsupportedResponseType, error: error)
+            catch let error {
+                throw OAuth2Error(errorMessage: "unable to parse the payload", kind: .unsupportedResponseType, error: error)
+            }
+        } else {
+            throw OAuth2Error(errorMessage: "unable to parse access token, no payload available", kind: .unsupportedResponseType, error: nil)
+            
         }
     }
-    fileprivate func parseError(){
+    fileprivate func parseError(data:Data?, status:Int) -> OAuth2Error{
+
+        var error = OAuth2Error(errorMessage:String(format: "HTTP Code: %d", status), kind:.serverError, error:nil)
+        
+        if let d = data{
+            do {
+                let jsonObject = try JSONSerialization.jsonObject(with: d, options: [])
+                
+                let jsonDic = jsonObject as! [String:Any]
+                
+                var errorCode = ""
+                if let eCode = jsonDic["error"] as? String{
+                 
+                    errorCode = eCode
+                }
+                var errorDescription = ""
+                if let eDescription = jsonDic["error_description"] as? String{
+                        errorDescription = eDescription
+                }
+                print(errorCode)
+                error = OAuth2Error(errorMessage: errorDescription, kind: OAuth2Error.ErrorKind.fromString(errorCode), error: nil)
+            }
+            catch let err {
+                error = OAuth2Error(errorMessage: "unable to parse the payload", kind: .unsupportedResponseType, error: err)
+            }
+        }
+        return error
     }
 
 }

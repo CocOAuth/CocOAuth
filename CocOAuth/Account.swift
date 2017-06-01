@@ -26,6 +26,7 @@ open class Account{
         self.config = config
         client = OAuth2Client(config: config)
     }
+    
     /**
     * Performs the authentication with resource owner password credentials.
     * This method is asynchronous. Use the completionHandler block to handle success or error.
