@@ -75,4 +75,8 @@ struct OAuth2Error: Error {
     let errorMessage: String
     let kind: ErrorKind
     let error:Error?
+    var localizedDescription: String {
+        return errorMessage
+    }
+    
 }

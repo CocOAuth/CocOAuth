@@ -101,8 +101,8 @@ internal class OAuth2Client{
                     do{
                         let tokenResult = try self.parseDate(data: data)
                         handler(tokenResult, nil)
-                    } catch let error{
-                        handler(nil, error)
+                    } catch let err{
+                        handler(nil, err)
                     }
                 }
                 return

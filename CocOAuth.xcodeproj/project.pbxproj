@@ -14,7 +14,7 @@
 		5EAFCEDE1C189999005C51AB /* OAuth2Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAFCEDD1C189999005C51AB /* OAuth2Client.swift */; };
 		5EAFCEE11C18CB12005C51AB /* TokenResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAFCEE01C18CB12005C51AB /* TokenResult.swift */; };
 		5EAFCEE31C18CB74005C51AB /* OAuth2Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAFCEE21C18CB74005C51AB /* OAuth2Config.swift */; };
-		5EF2F2B41C173FCD000F5227 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF2F2B31C173FCD000F5227 /* Account.swift */; };
+		5EF2F2B41C173FCD000F5227 /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF2F2B31C173FCD000F5227 /* Authenticator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +38,7 @@
 		5EAFCEDD1C189999005C51AB /* OAuth2Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2Client.swift; sourceTree = "<group>"; };
 		5EAFCEE01C18CB12005C51AB /* TokenResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenResult.swift; sourceTree = "<group>"; };
 		5EAFCEE21C18CB74005C51AB /* OAuth2Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2Config.swift; sourceTree = "<group>"; };
-		5EF2F2B31C173FCD000F5227 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		5EF2F2B31C173FCD000F5227 /* Authenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				5EAFCEDF1C18C16D005C51AB /* Common */,
 				5EAFCEDC1C18997B005C51AB /* Internal */,
 				5EA4751F1C16C5E20021B1CD /* CocOAuth.h */,
-				5EF2F2B31C173FCD000F5227 /* Account.swift */,
+				5EF2F2B31C173FCD000F5227 /* Authenticator.swift */,
 				5EA475211C16C5E20021B1CD /* Info.plist */,
 			);
 			path = CocOAuth;
@@ -227,7 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5EF2F2B41C173FCD000F5227 /* Account.swift in Sources */,
+				5EF2F2B41C173FCD000F5227 /* Authenticator.swift in Sources */,
 				5EAFCEDE1C189999005C51AB /* OAuth2Client.swift in Sources */,
 				5E2B013E1EDF5B1000BC8B14 /* OAuth2Error.swift in Sources */,
 				5EAFCEE11C18CB12005C51AB /* TokenResult.swift in Sources */,

@@ -10,10 +10,12 @@ CocOAuth is an OAuth2 frameworks for iOS written in Swift 2.0.
 - Enterprise
 - Easy to use
 
-##Usage##
+## Usage ##
 
-###Integration###
+###I ntegration ###
+
 - CocoaPods
+
 ```
 pod 'CocOAuth', :git => 'https://github.com/CocOAuth/CocOAuth.git', :branch => 'development'
 or file based
@@ -24,7 +26,7 @@ pod 'CocOAuth', :path => '../CocOAuth'
 import CocOAuth
 ```
 
-###Configuration###
+### Configuration ###
 ```swift
 let conf = CocOAuthConfig(
 	tokenURL: NSURL(string:"<YOUR OAuth2 Identity Provider>")!, 
@@ -34,7 +36,7 @@ let conf = CocOAuthConfig(
 account = Account(config: conf)
 
 ```
-###Authentication ###
+### Authentication ###
 ```swift
 @IBAction func login() {
         
@@ -43,19 +45,19 @@ account = Account(config: conf)
         })
     }
 ```
-###Retrive the Access Token###
+### Retrive the Access Token ###
 
-### User Info###
+### User Info ###
 
-###Invalidate the Token###
+### Invalidate the Token ###
 
-###Sign off###
+### Sign off ###
 
-###Persistence###
+### Persistence ###
 
-###Notification###
+### Notification ###
 
-###Error handling###
+### Error handling ###
 
 OAuth 2 specific Error Types 
 https://tools.ietf.org/html/rfc6749#section-5.2
@@ -74,7 +76,7 @@ unsupported_response_type|The authorization server does not support obtaining an
 server_error|The authorization server encountered an unexpected condition that prevented it from fulfilling the request. (This error code is needed because a 500 Internal Server Error HTTP status code cannot be returned to the client via an HTTP redirect.)|
 temporarily_unavailable|The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server. (This error code is needed because a 503 Service Unavailable HTTP status code cannot be returned to the client via an HTTP redirect.)|
 
-##Security considerations##
+## Security considerations ##
 
 ## Licence ##
 

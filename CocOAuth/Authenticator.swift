@@ -1,5 +1,5 @@
 //
-//  Account.swift
+//  Authenticator.swift
 //  CocOAuth
 //
 //  Created by Marko Seifert on 08.12.15.
@@ -8,10 +8,9 @@
 
 import Foundation
 
-open class Account{
+open class Authenticator{
     
-    public typealias CompletionHandler = () -> ()
-    //public typealias DataTaskResult = () throws -> (NSData, NSURLResponse)
+    public typealias CompletionHandler = (Bool, String?) -> ()
     
     let config:OAuth2Config
     let client:OAuth2Client
@@ -45,7 +44,25 @@ open class Account{
             
             print(result)
             print(error)
-            handler()
+            var success = false
+            var message : String?
+            if(error == nil){
+                success = true
+                
+                DispatchQueue.main.async {
+                    handler(success, message)
+                }
+            } else {
+                success = false
+                if let err = error{
+                    let oauthError = err as! OAuth2Error
+                    message = oauthError.errorMessage
+
+                    DispatchQueue.main.async {
+                        handler(success, message)
+                    }
+                }
+            }
         }
         
     }
