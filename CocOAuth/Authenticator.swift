@@ -10,10 +10,12 @@ import Foundation
 
 open class Authenticator{
     
-    public typealias CompletionHandler = (Bool, String?) -> ()
+    public typealias AuthenticationCompletionHandler = (Bool, OAuth2Error?) -> ()
+    public typealias AccessTokenCompletionHandler = (String?, OAuth2Error?) -> ()
     
     let config:OAuth2Config
     let client:OAuth2Client
+    var tokenResult : TokenResult?
     
     enum CocOAuthError: Error {
         case invalidUserCredentialsError
@@ -30,40 +32,98 @@ open class Authenticator{
     * Performs the authentication with resource owner password credentials.
     * This method is asynchronous. Use the completionHandler block to handle success or error.
     *
-    * @param username
-    *          the OAuth2 username
-    *
-    * @paramter password
-    *          the OAuth2 password
-    *
-    * @param completionHandler block
+    * @param username the OAuth2 username
+    * @paramter password the OAuth2 password
+    * @param AuthenticationCompletionHandler block
     */
-    open func authenticateWithUsername(_ username:String,password :String, handler : @escaping CompletionHandler) -> Void {
+    open func authenticateWithUsername(_ username:String,password :String, handler : @escaping AuthenticationCompletionHandler) -> Void {
         
         client.requestOAuthTokenWithUsername(username, password: password) { (result, error) in
-            
-            print(result)
-            print(error)
-            var success = false
-            var message : String?
+
             if(error == nil){
-                success = true
-                
+                self.tokenResult = result
                 DispatchQueue.main.async {
-                    handler(success, message)
+                    handler(true, error)
                 }
             } else {
-                success = false
-                if let err = error{
-                    let oauthError = err as! OAuth2Error
-                    message = oauthError.errorMessage
-
-                    DispatchQueue.main.async {
-                        handler(success, message)
-                    }
+                DispatchQueue.main.async {
+                    handler(false, error)
                 }
+                
             }
         }
         
+    }
+    
+    /**
+     Method retrieves an auth token for the api authorization if the accout is authenticated.
+     This method refresh the access token automatically, if the token is expired.
+     This method is asynchronous.
+     */
+    open func retrieveAccessToken(handler : @escaping AccessTokenCompletionHandler){
+        
+        let validAccessToken = isAccessTokenValid()
+    
+        if(validAccessToken.valid){
+            DispatchQueue.main.async {
+                handler(validAccessToken.accessToken, nil)
+            }
+            return
+        }
+        else{
+            
+            if let credential = client.credentialsStore.loadCredentials(){
+                client.requestOAuthTokenWithRefreshToken(refreshToken: credential.refreshToken, handler: { (result, error) in
+                    
+                    if let err = error{
+                        DispatchQueue.main.async {
+                            handler(nil, err)
+                        }
+                    }
+                    else if let tr = result {
+                        self.tokenResult = tr
+                        DispatchQueue.main.async {
+                            handler(tr.accessToken, nil)
+                        }
+                    }
+                })
+            } else {
+                let error = OAuth2Error(errorMessage: "no credentials available", kind: .unauthorized, error: nil)
+                DispatchQueue.main.async {
+                    handler(nil, error)
+                }
+            }
+        }
+    }
+    
+    /**
+     * app access token is not valid
+     */
+    open func invalidateAuthToken(){
+        
+    }
+    
+    /**
+     * Invalidates and forgets the authentication object including the auth token.
+     * If the credentials are stored because reuse-for-uthentication is set to YES, the credentials are also removed.
+     *
+     * This should be called when the user explicitly signs off from your app.
+     */
+    open func signOff(){
+        
+    }
+    
+    private func isAccessTokenValid() -> (valid:Bool, accessToken:String){
+        if let tr = tokenResult{
+            let accessToken = tr.accessToken
+            let date = Date()
+            let currentTime = date.timeIntervalSince1970
+            if currentTime - tr.timestamp < tr.expiresIn{
+                return (true,accessToken)
+            }
+            
+        }
+        return (false,"")
+
     }
 }

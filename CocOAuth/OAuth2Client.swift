@@ -8,16 +8,22 @@
 
 import Foundation
 
-internal typealias OAut2hCompletionHandler = (TokenResult?, Error?) -> ()
+internal typealias OAut2hCompletionHandler = (TokenResult?, OAuth2Error?) -> ()
 
 internal class OAuth2Client{
     
     let config:OAuth2Config
     
-    
+    let credentialsStore:CredentialsStore
     
     internal init(config:OAuth2Config){
         self.config = config
+        
+        if let cs = config.credentialsStore{
+            credentialsStore = cs
+        } else {
+            credentialsStore = InMemoryCredentialsStore()
+        }
     }
     
     /**
@@ -101,7 +107,11 @@ internal class OAuth2Client{
                     do{
                         let tokenResult = try self.parseDate(data: data)
                         handler(tokenResult, nil)
-                    } catch let err{
+                    } catch let err as OAuth2Error{
+                        handler(nil, err)
+                    }
+                    catch{
+                        let err = OAuth2Error(errorMessage:error.localizedDescription, kind:.internalError, error:error)
                         handler(nil, err)
                     }
                 }
@@ -134,12 +144,15 @@ internal class OAuth2Client{
                     var refreshToken:String? = nil
                     if let rToken = jsonDic["refresh_token"] as? String{
                         refreshToken = rToken
+                        credentialsStore.storeCredentials(Credentials(refreshToken: rToken))
                     }
                     var expiresIn:Int = 0
                     if let expIn = jsonDic["expires_in"] as? Int{
                         expiresIn = expIn
                     }
-                    return TokenResult(accessToken: accessToken as! String, refreshToken: refreshToken, expiresIn:expiresIn)
+                    let date = Date()
+                    let currentTime = date.timeIntervalSince1970
+                    return TokenResult(accessToken: accessToken as! String, refreshToken: refreshToken, expiresIn:Double(expiresIn), timestamp: currentTime)
                 }
                 throw OAuth2Error(errorMessage: "unable to parse access token", kind: .unsupportedResponseType, error: nil)
             }

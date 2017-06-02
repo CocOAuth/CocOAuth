@@ -9,13 +9,14 @@
 import Foundation
 
 
-struct OAuth2Error: Error {
+public struct OAuth2Error: Error {
     enum ErrorKind {
         case invalidRequest
         case invalidClient
         case invalidCallback
         case invalidGrant
         case unauthorizedClient
+        case unauthorized
         case unsupportedGrantType
         case invalidScope
         case accessDenied
@@ -42,6 +43,9 @@ struct OAuth2Error: Error {
                 break
             case "unauthorized_client":
                 error = unauthorizedClient
+                break
+            case "unauthorized":
+                error = unauthorized
                 break
             case "unsupported_grant_type":
                 error = unsupportedGrantType
@@ -75,8 +79,10 @@ struct OAuth2Error: Error {
     let errorMessage: String
     let kind: ErrorKind
     let error:Error?
-    var localizedDescription: String {
-        return errorMessage
+    public var localizedDescription: String {
+        get {
+            return errorMessage
+        }
     }
     
 }

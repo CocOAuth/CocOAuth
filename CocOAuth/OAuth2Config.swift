@@ -16,6 +16,8 @@ open class OAuth2Config{
     let clientID:String
     let clientSecret: String
     
+    var credentialsStore: CredentialsStore?
+    
     public init(tokenURL:URL, clientID:String, clientSecret:String, scopes:[String]? = [], timeout:UInt = 15){
         self.tokenURL = tokenURL
         self.clientID = clientID
