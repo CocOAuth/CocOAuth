@@ -38,18 +38,17 @@ let authenticator = Authenticator(config: config)
 ```
 ### Authentication ###
 ```swift
-@IBAction func login() {
-    
-    authenticator.authenticateWithUsername(username, password: password) {success, errorMessage in
-      if(success){
-        self.message.text = "success"
-      }else{
-        self.message.text = errorMessage
-      }
-    }
-}
+  authenticator?.authenticateWithUsername(username, password: password) {success, error in
+    ...
+  }
 ```
 ### Retrive the Access Token ###
+
+```swift
+authenticator?.retrieveAccessToken(handler: { (token, error) in
+  
+})
+```
 
 ### User Info ###
 
