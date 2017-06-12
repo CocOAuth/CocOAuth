@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CredentialsStore{
+public protocol CredentialsStore{
     
     func storeCredentials(_ credentials:Credentials)
     func loadCredentials() -> Credentials?
