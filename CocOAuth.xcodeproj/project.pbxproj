@@ -11,6 +11,8 @@
 		5E6F6A1F1EE1720400779BEA /* CredentialsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F6A1E1EE1720400779BEA /* CredentialsStore.swift */; };
 		5E6F6A211EE172B700779BEA /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F6A201EE172B700779BEA /* Credentials.swift */; };
 		5E6F6A231EE1768400779BEA /* InMemoryCredentialsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F6A221EE1768400779BEA /* InMemoryCredentialsStore.swift */; };
+		5E95319C1F02758C00980007 /* RefreshCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E95319B1F02758C00980007 /* RefreshCredentials.swift */; };
+		5E95319E1F027EC200980007 /* ROPCCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E95319D1F027EC200980007 /* ROPCCredentials.swift */; };
 		5EA475201C16C5E20021B1CD /* CocOAuth.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EA4751F1C16C5E20021B1CD /* CocOAuth.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5EA475271C16C5E20021B1CD /* CocOAuth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EA4751C1C16C5E20021B1CD /* CocOAuth.framework */; };
 		5EA4752C1C16C5E20021B1CD /* CocOAuthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EA4752B1C16C5E20021B1CD /* CocOAuthTests.swift */; };
@@ -35,6 +37,8 @@
 		5E6F6A1E1EE1720400779BEA /* CredentialsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialsStore.swift; sourceTree = "<group>"; };
 		5E6F6A201EE172B700779BEA /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		5E6F6A221EE1768400779BEA /* InMemoryCredentialsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InMemoryCredentialsStore.swift; sourceTree = "<group>"; };
+		5E95319B1F02758C00980007 /* RefreshCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshCredentials.swift; sourceTree = "<group>"; };
+		5E95319D1F027EC200980007 /* ROPCCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ROPCCredentials.swift; sourceTree = "<group>"; };
 		5EA4751C1C16C5E20021B1CD /* CocOAuth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CocOAuth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EA4751F1C16C5E20021B1CD /* CocOAuth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CocOAuth.h; sourceTree = "<group>"; };
 		5EA475211C16C5E20021B1CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -122,6 +126,8 @@
 				5E2B013D1EDF5B1000BC8B14 /* OAuth2Error.swift */,
 				5E6F6A1E1EE1720400779BEA /* CredentialsStore.swift */,
 				5E6F6A201EE172B700779BEA /* Credentials.swift */,
+				5E95319B1F02758C00980007 /* RefreshCredentials.swift */,
+				5E95319D1F027EC200980007 /* ROPCCredentials.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -238,11 +244,13 @@
 			files = (
 				5EF2F2B41C173FCD000F5227 /* Authenticator.swift in Sources */,
 				5EAFCEDE1C189999005C51AB /* OAuth2Client.swift in Sources */,
+				5E95319C1F02758C00980007 /* RefreshCredentials.swift in Sources */,
 				5E2B013E1EDF5B1000BC8B14 /* OAuth2Error.swift in Sources */,
 				5E6F6A211EE172B700779BEA /* Credentials.swift in Sources */,
 				5E6F6A231EE1768400779BEA /* InMemoryCredentialsStore.swift in Sources */,
 				5EAFCEE11C18CB12005C51AB /* TokenResult.swift in Sources */,
 				5E6F6A1F1EE1720400779BEA /* CredentialsStore.swift in Sources */,
+				5E95319E1F027EC200980007 /* ROPCCredentials.swift in Sources */,
 				5EAFCEE31C18CB74005C51AB /* OAuth2Config.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

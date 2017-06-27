@@ -7,9 +7,14 @@
 //
 
 import Foundation
-public struct Credentials {
-    public let refreshToken:String
-    public init(refreshToken:String) {
-        self.refreshToken = refreshToken
+public class Credentials {
+    
+    public let clientID:String
+    public let clientSecret:String
+    
+    public init(clientID:String, clientSecret:String) {
+        
+        self.clientID = clientID
+        self.clientSecret = clientSecret
     }
 }

@@ -27,17 +27,39 @@ internal class OAuth2Client{
     }
     
     /**
+     * Performs the OAut2 access token request with credentials.
+     * This method is asynchronous. Use the completionHandler closures to handle success or error.
+     * The client id and secret and the scopes are part oft the {@link CocOAuthConfig}.
+     * @param username the user id
+     * @param password the user´s password
+     * @param completionHandler closures
+     */
+    internal func requestOAuthTokenWithCredentials(_ credentials: Credentials, handler : @escaping OAut2hCompletionHandler) -> Void {
+        
+        if let refreshCredentials = credentials as? RefreshCredentials{
+        
+            requestOAuthTokenWithRefreshToken(refreshTokenCredentials: refreshCredentials, handler: handler)
+        }
+        else if let ropcCredentials = credentials as? ROPCCredentials{
+            
+            requestOAuthTokenWithUsername(ropcCredentials, handler: handler)
+        }
+        else {
+            requestOAuthToken(credentials: credentials, handler: handler)
+        }
+    }
+    
+    /**
     * Performs the OAut2 access token request with resource owner password credentials.
     * This method is asynchronous. Use the completionHandler closures to handle success or error.
     * The client id and secret and the scopes are part oft the {@link CocOAuthConfig}.
-    * @param username the user id
-    * @param password the user´s password
+    * @param ropc credentials object with user name and password
     * @param completionHandler closures
     */
-    internal func requestOAuthTokenWithUsername(_ username: String, password:String, handler : @escaping OAut2hCompletionHandler) -> Void {
+    internal func requestOAuthTokenWithUsername(_ ropc: ROPCCredentials, handler : @escaping OAut2hCompletionHandler) -> Void {
         
-        let bodyString = "grant_type=password&username=\(username)&password=\(password)"
-        requestOAuthTokenWithBody(body: bodyString, handler:handler);
+        let bodyString = "grant_type=password&username=\(ropc.username)&password=\(ropc.password)"
+        requestOAuthTokenWithBody(clientID: ropc.clientID, clientSecret: ropc.clientSecret, body: bodyString, handler:handler)
     }
     /**
      * Performs the OAut2 access token request with client credentials.
@@ -46,9 +68,9 @@ internal class OAuth2Client{
      *
      * @param completionHandler block
      */
-    internal func requestOAuthToken(handler : @escaping OAut2hCompletionHandler){
+    internal func requestOAuthToken(credentials: Credentials, handler : @escaping OAut2hCompletionHandler){
         let bodyString = "grant_type=client_credentials"
-        requestOAuthTokenWithBody(body: bodyString, handler: handler);
+        requestOAuthTokenWithBody(clientID: credentials.clientID, clientSecret: credentials.clientSecret, body: bodyString, handler: handler)
     }
     /**
      * Performs the OAut2 access token request with the authorization code.
@@ -66,20 +88,20 @@ internal class OAuth2Client{
      * @param authcode the authorization code from a third party (or internal) identity provider
      * @param completionHandler block
      */
-    internal func requestOAuthTokenWithRefreshToken(refreshToken: String, handler : @escaping OAut2hCompletionHandler){
+    internal func requestOAuthTokenWithRefreshToken(refreshTokenCredentials: RefreshCredentials, handler : @escaping OAut2hCompletionHandler){
         
-        let bodyString = "grant_type=refresh_token&refresh_token=\(refreshToken)"
-        requestOAuthTokenWithBody(body: bodyString,handler: handler);
+        let bodyString = "grant_type=refresh_token&refresh_token=\(refreshTokenCredentials.refreshToken)"
+        requestOAuthTokenWithBody(clientID: refreshTokenCredentials.clientID, clientSecret: refreshTokenCredentials.clientSecret, body: bodyString,handler: handler)
     }
     // MARK mark - private methods
-    fileprivate func requestOAuthTokenWithBody(body:String, handler : @escaping OAut2hCompletionHandler){
+    fileprivate func requestOAuthTokenWithBody(clientID:String,clientSecret:String, body:String, handler : @escaping OAut2hCompletionHandler){
     
         let session = URLSession.shared//(configuration: configuration)
         let request = NSMutableURLRequest(url: config.tokenURL)
         
         // Authorization header with client credentials
         
-        let authHeader = _createAuthorizationHeader()
+        let authHeader = _createAuthorizationHeader(clientID: clientID, clientSecret: clientSecret)
         request.addValue(authHeader, forHTTPHeaderField:"Authorization")
         
         request.addValue("application/x-www-form-urlencoded;charset=UTF-8", forHTTPHeaderField: "Content-Type")
@@ -105,7 +127,7 @@ internal class OAuth2Client{
                     handler(nil, error)
                 } else {
                     do{
-                        let tokenResult = try self.parseDate(data: data)
+                        let tokenResult = try self.parseDate(clientID:clientID,clientSecret:clientSecret,data: data)
                         handler(tokenResult, nil)
                     } catch let err as OAuth2Error{
                         handler(nil, err)
@@ -126,14 +148,14 @@ internal class OAuth2Client{
         task.resume()
     }
     
-    fileprivate func _createAuthorizationHeader() -> (String) {
+    fileprivate func _createAuthorizationHeader(clientID:String,clientSecret:String) -> (String) {
         
-        let authCredentials = "\(config.clientID):\(config.clientSecret)"
+        let authCredentials = "\(clientID):\(clientSecret)"
         let utf8str = authCredentials.data(using: String.Encoding.utf8)
         let base64String = utf8str?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
         return "Basic \(base64String!)";
     }
-    fileprivate func parseDate(data:Data?) throws -> TokenResult{
+    fileprivate func parseDate(clientID:String,clientSecret:String,data:Data?) throws -> TokenResult{
 
         if let d = data{
             do {
@@ -144,7 +166,9 @@ internal class OAuth2Client{
                     var refreshToken:String? = nil
                     if let rToken = jsonDic["refresh_token"] as? String{
                         refreshToken = rToken
-                        credentialsStore.storeCredentials(Credentials(refreshToken: rToken))
+                        credentialsStore.storeCredentials(RefreshCredentials(clientID:clientID,clientSecret:clientSecret, refreshToken: rToken))
+                    }else{
+                        credentialsStore.storeCredentials(Credentials(clientID:clientID,clientSecret:clientSecret))
                     }
                     var expiresIn:Int = 0
                     if let expIn = jsonDic["expires_in"] as? Int{

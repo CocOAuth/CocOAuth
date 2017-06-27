@@ -38,8 +38,9 @@ open class Authenticator{
     */
     open func authenticateWithUsername(_ username:String,password :String, handler : @escaping AuthenticationCompletionHandler) -> Void {
         
-        client.requestOAuthTokenWithUsername(username, password: password) { (result, error) in
-
+        let ropc = ROPCCredentials(clientID: config.clientID, clientSecret: config.clientSecret, username: username, password: password)
+        client.requestOAuthTokenWithCredentials(ropc, handler: { (result, error) in
+            
             if(error == nil){
                 self.tokenResult = result
                 DispatchQueue.main.async {
@@ -51,8 +52,7 @@ open class Authenticator{
                 }
                 
             }
-        }
-        
+        })
     }
     
     /**
@@ -73,7 +73,8 @@ open class Authenticator{
         else{
             
             if let credential = client.credentialsStore.loadCredentials(){
-                client.requestOAuthTokenWithRefreshToken(refreshToken: credential.refreshToken, handler: { (result, error) in
+        
+                client.requestOAuthTokenWithCredentials(credential, handler: { (result, error) in
                     
                     if let err = error{
                         DispatchQueue.main.async {
@@ -87,6 +88,7 @@ open class Authenticator{
                         }
                     }
                 })
+                
             } else {
                 let error = OAuth2Error(errorMessage: "no credentials available", kind: .unauthorized, error: nil)
                 DispatchQueue.main.async {
