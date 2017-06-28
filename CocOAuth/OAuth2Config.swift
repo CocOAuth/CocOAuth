@@ -15,15 +15,18 @@ open class OAuth2Config{
     let requestTimeout:UInt
     let clientID:String
     let clientSecret: String
+    let additionalHeader: [String:String]
     
     open var credentialsStore: CredentialsStore?
     
-    public init(tokenURL:URL, clientID:String, clientSecret:String, scopes:[String]? = [], timeout:UInt = 15){
+    public init(tokenURL:URL, clientID:String, clientSecret:String, additionalHeader: [String:String]=[String:String](), scopes:[String] = [], timeout:UInt = 15){
         self.tokenURL = tokenURL
         self.clientID = clientID
         self.clientSecret = clientSecret
         self.scopes = scopes
         self.requestTimeout = timeout
+        self.additionalHeader = additionalHeader
+        
     }
     
 }

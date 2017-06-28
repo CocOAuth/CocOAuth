@@ -103,9 +103,13 @@ internal class OAuth2Client{
         
         let authHeader = _createAuthorizationHeader(clientID: clientID, clientSecret: clientSecret)
         request.addValue(authHeader, forHTTPHeaderField:"Authorization")
-        
         request.addValue("application/x-www-form-urlencoded;charset=UTF-8", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField:"Accept")
+        
+        for key in config.additionalHeader.keys{
+            request.addValue(config.additionalHeader[key]!, forHTTPHeaderField:key)
+        }
+        
         request.httpMethod = "POST"
         
         var requestBody = body
