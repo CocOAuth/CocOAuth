@@ -29,6 +29,30 @@ open class Authenticator{
     }
     
     /**
+     * Performs the authentication with client credentials.
+     * This method is asynchronous. Use the completionHandler block to handle success or error.
+     *
+     * @param AuthenticationCompletionHandler block
+     */
+    open func authenticateWithClientCredentials(handler : @escaping AuthenticationCompletionHandler) -> Void {
+        
+        let credentials = Credentials(clientID: config.clientID, clientSecret: config.clientSecret)
+        client.requestOAuthTokenWithCredentials(credentials, handler: { (result, error) in
+            
+            if(error == nil){
+                self.tokenResult = result
+                DispatchQueue.main.async {
+                    handler(true, error)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    handler(false, error)
+                }
+            }
+        })
+    }
+    
+    /**
     * Performs the authentication with resource owner password credentials.
     * This method is asynchronous. Use the completionHandler block to handle success or error.
     *
