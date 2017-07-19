@@ -27,7 +27,7 @@ public struct OAuth2Error: Error {
         
         static func fromString(_ errorCode: String) -> ErrorKind {
             var error = ErrorKind.internalError
-            switch errorCode {
+            switch errorCode.lowercased() {
                 
             case "invalid_request":
                 error = invalidRequest
