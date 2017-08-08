@@ -209,7 +209,9 @@ internal class OAuth2Client{
                 }
                 var errorDescription = ""
                 if let eDescription = jsonDic["error_description"] as? String{
-                        errorDescription = eDescription
+                    errorDescription = eDescription
+                } else if let eMessage = jsonDic["message"] as? String{
+                    errorDescription = eMessage
                 }
                 print(errorCode)
                 error = OAuth2Error(errorMessage: errorDescription, kind: OAuth2Error.ErrorKind.fromString(errorCode), error: nil)
