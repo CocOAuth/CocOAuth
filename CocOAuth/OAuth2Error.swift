@@ -10,7 +10,7 @@ import Foundation
 
 
 public struct OAuth2Error: Error {
-    enum ErrorKind {
+    public enum ErrorKind {
         case invalidRequest
         case invalidClient
         case invalidCallback
@@ -76,8 +76,8 @@ public struct OAuth2Error: Error {
         }
     }
     
-    let errorMessage: String
-    let kind: ErrorKind
+    public let errorMessage: String
+    public let kind: ErrorKind
     let error:Error?
     public var localizedDescription: String {
         get {
