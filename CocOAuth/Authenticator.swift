@@ -17,6 +17,9 @@ open class Authenticator{
     let client:OAuth2Client
     var tokenResult : TokenResult?
     
+    private let mutex = PThreadMutex()
+    private var completionHandlerQueue: [AccessTokenCompletionHandler] = []
+    
     enum CocOAuthError: Error {
         case invalidUserCredentialsError
         case offlineError
@@ -96,23 +99,25 @@ open class Authenticator{
         }
         else{
             
-            if let credential = client.credentialsStore.loadCredentials(){
-        
-                client.requestOAuthTokenWithCredentials(credential, handler: { (result, error) in
+            if let credential = client.credentialsStore.loadCredentials() {
+                mutex.sync(execute: { [weak self] () -> Void in
+                    self?.completionHandlerQueue.append(handler)
                     
-                    if let err = error{
-                        DispatchQueue.main.async {
-                            handler(nil, err)
-                        }
-                    }
-                    else if let tr = result {
-                        self.tokenResult = tr
-                        DispatchQueue.main.async {
-                            handler(tr.accessToken, nil)
+                    if self?.completionHandlerQueue.count == 1 {
+                        client.requestOAuthTokenWithCredentials(credential) { (result, error) in
+                            
+                            DispatchQueue.main.async {
+                                self?.tokenResult = result
+                                
+                                self?.completionHandlerQueue.forEach {
+                                    $0(result?.accessToken, error)
+                                }
+                                
+                                self?.completionHandlerQueue.removeAll()
+                            }
                         }
                     }
                 })
-                
             } else {
                 let error = OAuth2Error(errorMessage: "no credentials available", kind: .unauthorized, error: nil)
                 DispatchQueue.main.async {
