@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24712F961F90C2420058A714 /* CwlMutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24712F951F90C2420058A714 /* CwlMutex.swift */; };
 		5E2B013E1EDF5B1000BC8B14 /* OAuth2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2B013D1EDF5B1000BC8B14 /* OAuth2Error.swift */; };
 		5E6F6A1F1EE1720400779BEA /* CredentialsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F6A1E1EE1720400779BEA /* CredentialsStore.swift */; };
 		5E6F6A211EE172B700779BEA /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E6F6A201EE172B700779BEA /* Credentials.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		24712F951F90C2420058A714 /* CwlMutex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CwlMutex.swift; sourceTree = "<group>"; };
 		5E2B013D1EDF5B1000BC8B14 /* OAuth2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2Error.swift; sourceTree = "<group>"; };
 		5E6F6A1E1EE1720400779BEA /* CredentialsStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialsStore.swift; sourceTree = "<group>"; };
 		5E6F6A201EE172B700779BEA /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			children = (
 				5EAFCEDD1C189999005C51AB /* OAuth2Client.swift */,
 				5E6F6A221EE1768400779BEA /* InMemoryCredentialsStore.swift */,
+				24712F951F90C2420058A714 /* CwlMutex.swift */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EF2F2B41C173FCD000F5227 /* Authenticator.swift in Sources */,
+				24712F961F90C2420058A714 /* CwlMutex.swift in Sources */,
 				5EAFCEDE1C189999005C51AB /* OAuth2Client.swift in Sources */,
 				5E95319C1F02758C00980007 /* RefreshCredentials.swift in Sources */,
 				5E2B013E1EDF5B1000BC8B14 /* OAuth2Error.swift in Sources */,
