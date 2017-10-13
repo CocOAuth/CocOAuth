@@ -104,7 +104,7 @@ open class Authenticator{
                     self?.completionHandlerQueue.append(handler)
                     
                     if self?.completionHandlerQueue.count == 1 {
-                        client.requestOAuthTokenWithCredentials(credential) { (result, error) in
+                        self?.client.requestOAuthTokenWithCredentials(credential) { (result, error) in
                             
                             DispatchQueue.main.async {
                                 self?.tokenResult = result
