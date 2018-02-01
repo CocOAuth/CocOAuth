@@ -9,5 +9,5 @@ Pod::Spec.new do |spec|
   spec.source_files = 'CocOAuth/*.{h,swift}'
   spec.framework    = 'Foundation'
   spec.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0' }
-  spec.ios.deployment_target = '10.2'
+  spec.ios.deployment_target = '9.0'
 end 
