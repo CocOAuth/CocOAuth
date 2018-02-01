@@ -9,4 +9,5 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => 'https://github.com/CocOAuth/CocOAuth.git', :tag => '0.1.2'}
   spec.source_files = 'CocOAuth/*.{h,swift}'
   spec.framework    = 'Foundation'
+  spec.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0' }
 end
