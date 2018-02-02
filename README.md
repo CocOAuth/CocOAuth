@@ -42,8 +42,10 @@ let authenticator = Authenticator(config: config)
 You can create and configure as many authenticators you want. We are using this in an Identity Card App. Each Identity Card has its own authenticator. With own OAuth2 Server or tenant on a shared platform.
 
 ### Authentication ###
+The Authenticator API provides:
 
-
+- authenticateWithClientCredentials
+- authenticateWithUsername
 
 ```swift
   if let username = username.text, let password = password.text {
@@ -58,7 +60,11 @@ You can create and configure as many authenticators you want. We are using this 
     }
   }
 ```
+In case of "authenticateWithClientCredentials" the client credentials will be stored in the CredentialsStore and will be reused automatically if the token is expired. In the other case (authenticateWithUsername), in addition, the OAuth2 refresh token will be stored and reused.
+
 ### Retrive the Access Token ###
+
+This method returns the OAuth2 access token. The token will automatically renewed if expired.
 
 ```swift
   authenticator.retrieveAccessToken(handler: { (token, error) in
@@ -70,15 +76,44 @@ You can create and configure as many authenticators you want. We are using this 
   })
 ```
 
-### Invalidate the Token ###
-
-### Sign off ###
-
 ### Persistence ###
+The inbuilt credentials store is a simple in-memory store.
+You can implement and configure your own store. E.g. using the iOS keychain to store the credentials.
 
+- implement the CredentialsStore protocol
+  
+```swift
+  public protocol CredentialsStore{
+    
+    func storeCredentials(_ credentials:Credentials)
+    func loadCredentials() -> Credentials?
+    
+  }
+  
+  import CocOAuth
+  import KeychainAccess
+
+  class KeychainCredentialsStore: CredentialsStore {
+    
+      var keychain: Keychain!
+    
+      init(storeName: String, userAuth: Bool=true ) {
+          keychain = Keychain(service: storeName).accessibility(.whenUnlocked)
+          if userAuth {
+              keychain = self.keychain.accessibility(.whenPasscodeSetThisDeviceOnly, authenticationPolicy: .userPresence).authenticationPrompt("Authenticate to update your access token")
+          }   
+      }
+      ...
+  }
+```
+
+- set your own store in the config
+
+```swift
+  config.credentialsStore = KeychainCredentialsStore(storeName: tenantID, userAuth: userAuth)
+```
 
 ### Error handling ###
-
 
 OAuth 2 specific Error Types 
 https://tools.ietf.org/html/rfc6749#section-5.2
