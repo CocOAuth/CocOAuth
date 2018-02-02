@@ -3,8 +3,9 @@
 
 # {in progress} CocOAuth #
 
-CocOAuth is an OAuth2 frameworks for iOS written in Swift 3.0.
+CocOAuth is an OAuth2 frameworks for iOS written in Swift 4.0.
 
+[![Build Status](https://www.bitrise.io/app/0ed7d6755181ac63/status.svg?token=qYQIga23cV3OqMQiZyQ5qQ&branch=master)](https://www.bitrise.io/app/0ed7d6755181ac63)
 
 - Security
 - Enterprise
