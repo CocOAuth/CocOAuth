@@ -24,7 +24,7 @@ pod 'CocOAuth', '~> 0.1.4'
 ```
 ### The main concept: The Authenticator ###
 An Authenticator encapsulates one OAuth2 identity. This means one user or device in the context of one tenant.
-You can create as many authenticators you want. We are using this in an Identity Card App. Each Identity Card has its own authenticator. With own OAuth2 Server or tenant on a shared platform.
+You can create as many authenticators you want. We are using this in an identity card app. Each identity card has its own authenticator with its own OAuth2 server or tenant on a shared platform.
 
 ![Authenticator Big Picture](/BigPicture.png?raw=true)
 
