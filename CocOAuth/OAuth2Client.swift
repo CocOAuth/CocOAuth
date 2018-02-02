@@ -15,6 +15,7 @@ internal class OAuth2Client{
     let config:OAuth2Config
     
     let credentialsStore:CredentialsStore
+    let session:URLSessionProtocol
     
     internal init(config:OAuth2Config){
         self.config = config
@@ -23,6 +24,12 @@ internal class OAuth2Client{
             credentialsStore = cs
         } else {
             credentialsStore = InMemoryCredentialsStore()
+        }
+        
+        if let se = config.session{
+            session = se
+        } else {
+            session = URLSession.shared
         }
     }
     
@@ -94,9 +101,8 @@ internal class OAuth2Client{
         requestOAuthTokenWithBody(clientID: refreshTokenCredentials.clientID, clientSecret: refreshTokenCredentials.clientSecret, body: bodyString,handler: handler)
     }
     // MARK mark - private methods
-    fileprivate func requestOAuthTokenWithBody(clientID:String,clientSecret:String, body:String, handler : @escaping OAut2hCompletionHandler){
+    func requestOAuthTokenWithBody(clientID:String,clientSecret:String, body:String, handler : @escaping OAut2hCompletionHandler){
     
-        let session = URLSession.shared//(configuration: configuration)
         let request = NSMutableURLRequest(url: config.tokenURL)
         
         // Authorization header with client credentials

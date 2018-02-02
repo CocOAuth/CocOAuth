@@ -18,6 +18,8 @@ open class OAuth2Config{
     let additionalHeader: [String:String]
     
     open var credentialsStore: CredentialsStore?
+    var session: URLSessionProtocol?
+    
     
     public init(tokenURL:URL, clientID:String, clientSecret:String, additionalHeader: [String:String]=[String:String](), scopes:[String] = [], timeout:UInt = 15){
         self.tokenURL = tokenURL
@@ -26,7 +28,6 @@ open class OAuth2Config{
         self.scopes = scopes
         self.requestTimeout = timeout
         self.additionalHeader = additionalHeader
-        
     }
     
 }
