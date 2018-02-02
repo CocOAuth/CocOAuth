@@ -1,12 +1,12 @@
 ![CocOAuth_Logo_262x2632](http://cocoauth.marko-seifert.de/presskit/CocOAuth_Logo_262x262.png)
 
 
-# {in progress} CocOAuth #
+# CocOAuth #
 
 CocOAuth is an OAuth2 frameworks for iOS written in Swift 4.0.
 
 [![Build Status](https://www.bitrise.io/app/0ed7d6755181ac63/status.svg?token=qYQIga23cV3OqMQiZyQ5qQ&branch=master)](https://www.bitrise.io/app/0ed7d6755181ac63)
-[![Badge w/ Platform](https://img.shields.io/cocoapods/v/CocOAuth.svg?style=flat)]
+![Badge w/ Platform](https://img.shields.io/cocoapods/v/CocOAuth.svg?style=flat)
 ![Swift 4.0](https://img.shields.io/badge/Swift-4.0-orange.svg)
 
 - Security
