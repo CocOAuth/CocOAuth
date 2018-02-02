@@ -17,40 +17,58 @@ CocOAuth is an OAuth2 frameworks for iOS written in Swift 3.0.
 - CocoaPods
 
 ```
-pod 'CocOAuth', :git => 'https://github.com/CocOAuth/CocOAuth.git', :branch => 'development'
-or file based
-pod 'CocOAuth', :path => '../CocOAuth'
+pod 'CocOAuth', '~> 0.1.4'
 ```
-- Import
-```swift
-import CocOAuth
-```
+### The main concept: The Authenticator ###
+An Authenticator encapsulates one OAuth2 identity. This means one user or device in the context of one tenant.
+You can create as many authenticators you want. We are using this in an Identity Card App. Each Identity Card has its own authenticator. With own OAuth2 Server or tenant on a shared platform.
+
+![Authenticator Big Picture](/BigPicture.png?raw=true)
+
 
 ### Configuration ###
+
+Before you make any authentication request using the CocOAuth library in your app, you will need to configure it.
+
 ```swift
-let conf = OAuth2Config(
-	tokenURL: NSURL(string:"<YOUR OAuth2 Identity Provider>")!, 
-	clientID: "<YOUR_CLIENT_ID>", 
-	clientSecret: "<YOUR_CLIENT_SECRET>")
+let config = OAuth2Config(
+  tokenURL: URL(string: <YOUR OAuth2 Identity Provider Token URL>)!, 
+  clientID: <YOUR_CLIENT_ID>, 
+  clientSecret: <YOUR_CLIENT_SECRET>)
 
 let authenticator = Authenticator(config: config)
 
 ```
+You can create and configure as many authenticators you want. We are using this in an Identity Card App. Each Identity Card has its own authenticator. With own OAuth2 Server or tenant on a shared platform.
+
 ### Authentication ###
+
+
+
 ```swift
-  authenticator?.authenticateWithUsername(username, password: password) {success, error in
-    ...
+  if let username = username.text, let password = password.text {
+    authenticator.authenticateWithUsername(username, password: password) {success, error in
+      if(success){
+        self.message.text = "success"
+      }else{
+        if let err = error{
+          self.message.text = err.localizedDescription
+        }
+      }
+    }
   }
 ```
 ### Retrive the Access Token ###
 
 ```swift
-authenticator?.retrieveAccessToken(handler: { (token, error) in
-  
-})
+  authenticator.retrieveAccessToken(handler: { (token, error) in
+    if let accessToken = token{
+      let token = accessToken
+    }else if let e = error{
+      self.message.text = e.localizedDescription
+    }
+  })
 ```
-
-### User Info ###
 
 ### Invalidate the Token ###
 
@@ -58,9 +76,9 @@ authenticator?.retrieveAccessToken(handler: { (token, error) in
 
 ### Persistence ###
 
-### Notification ###
 
 ### Error handling ###
+
 
 OAuth 2 specific Error Types 
 https://tools.ietf.org/html/rfc6749#section-5.2
