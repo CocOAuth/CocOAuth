@@ -144,7 +144,7 @@ open class Authenticator{
         
     }
     
-    private func isAccessTokenValid() -> (valid:Bool, accessToken:String){
+    func isAccessTokenValid() -> (valid:Bool, accessToken:String){
         if let tr = tokenResult{
             let accessToken = tr.accessToken
             let date = Date()
