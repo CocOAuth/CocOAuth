@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 public struct OAuth2Error: Error {
     public enum ErrorKind {
         case invalidRequest
@@ -31,46 +30,32 @@ public struct OAuth2Error: Error {
                 
             case "invalid_request":
                 error = invalidRequest
-                break
             case "invalid_client":
                 error = invalidClient
-                break
             case "invalid_callback":
                 error = invalidCallback
-                break
             case "invalid_grant":
                 error = invalidGrant
-                break
             case "unauthorized_client":
                 error = unauthorizedClient
-                break
             case "unauthorized":
                 error = unauthorized
-                break
             case "unsupported_grant_type":
                 error = unsupportedGrantType
-                break
             case "invalid_scope":
                 error = invalidScope
-                break
             case "access_denied":
                 error = accessDenied
-                break
             case "unsupported_response_type":
                 error = unsupportedResponseType
-                break
             case "server_error":
                 error = serverError
-                break
             case "temporarily_unavailable":
                 error = temporarilyUnavailable
-                break
             case "internal_error":
                 error = internalError
-                break
             default:
                 error = internalError
-                break
             }
             return error
         }
@@ -78,11 +63,10 @@ public struct OAuth2Error: Error {
     
     public let errorMessage: String
     public let kind: ErrorKind
-    let error:Error?
+    let error: Error?
     public var localizedDescription: String {
-        get {
-            return errorMessage
-        }
+        return errorMessage
+    
     }
     
 }

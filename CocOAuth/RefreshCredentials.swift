@@ -7,11 +7,11 @@
 //
 
 import Foundation
-public class RefreshCredentials: Credentials{
+public class RefreshCredentials: Credentials {
     
-    public let refreshToken:String
+    public let refreshToken: String
     
-    public init(clientID: String, clientSecret: String, refreshToken:String) {
+    public init(clientID: String, clientSecret: String, refreshToken: String) {
         self.refreshToken = refreshToken
         super.init(clientID: clientID, clientSecret: clientSecret)
         

@@ -9,8 +9,8 @@
 import Foundation
 
 struct TokenResult {
-    let accessToken:String
-    let refreshToken:String?
-    let expiresIn:Double
-    let timestamp:TimeInterval
+    let accessToken: String
+    let refreshToken: String?
+    let expiresIn: Double
+    let timestamp: TimeInterval
 }

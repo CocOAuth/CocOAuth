@@ -1,0 +1,58 @@
+disabled_rules:
+# rule identifiers to exclude from running
+- leading_whitespace
+- trailing_whitespace
+- identifier_name
+- type_name
+- large_tuple
+- type_body_length
+- line_length
+- file_length
+- function_parameter_count
+- function_body_length
+- cyclomatic_complexity
+- nesting
+opt_in_rules:
+# some rules are only opt-in
+- empty_count
+- force_unwrapping
+- redundant_nil_coalescing
+excluded:
+# paths to ignore during linting. overridden by `included`.
+- Pods
+- CocOAuthTests
+
+# parameterized rules can be customized from this configuration file
+line_length: 220
+# parameterized rules are first parameterized as a warning level, then error level.
+type_body_length:
+- 300
+# warning
+- 600
+# error
+# parameterized rules are first parameterized as a warning level, then error level.
+identifier_name:
+max_length:
+warning: 40
+error: 60
+min_length:
+warning: 2
+error: 1
+cyclomatic_complexity:
+warning: 10
+error: 25
+reporter: "xcode"
+ 
+#custom_rules:
+# IBOutlets_should_be_weak:
+# included: ".*.swift"
+# name: "IBOutlets weak notification"
+# regex: "@IBOutlet\s+var\s+((?!weak).+:)"
+# message: "Should be weak to avoid retain cycles."
+# severity: warning
+# Avoid_Nil-Coalescing_in_strings:
+# included: ".*.swift"
+# name: "Nil-Coalescing in strings"
+# regex: "\\\([\"\w\d\.]+\s\?{2}\s[\"\w\d\.]+\)"
+# message: "Nil-Coalescing increased the build time dramaticly"
+# severity: error
