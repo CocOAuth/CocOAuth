@@ -40,9 +40,18 @@ let config = OAuth2Config(
   clientSecret: <YOUR_CLIENT_SECRET>)
 
 let authenticator = Authenticator(config: config)
-
 ```
-You can create and configure as many authenticators you want. We are using this in an Identity Card App. Each Identity Card has its own authenticator. With own OAuth2 Server or tenant on a shared platform.
+
+**Advanced Configuration**
+
+```swift
+  OAuth2Config(
+      ...
+      additionalHeader: <YOUR_ADDITIONAL_HEADER>, 
+      scopes: <YOUR_SCOPES_>, 
+      timeout: <TIMEOUT>)
+```
+In our case we transmit the tenantId in the additional header.
 
 ### Authentication ###
 The Authenticator API provides:
