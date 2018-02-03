@@ -9,10 +9,10 @@
 import Foundation
 public class Credentials {
     
-    public let clientID:String
-    public let clientSecret:String
+    public let clientID: String
+    public let clientSecret: String
     
-    public init(clientID:String, clientSecret:String) {
+    public init(clientID: String, clientSecret: String) {
         
         self.clientID = clientID
         self.clientSecret = clientSecret

@@ -11,7 +11,7 @@ import XCTest
 
 class AuthenticatorTest: XCTestCase {
     
-    let errors: [String] = ["invalid_request","invalid_client","invalid_callback","invalid_grant","unauthorized_client","unauthorized","unsupported_grant_type","invalid_scope","access_denied","unsupported_response_type","server_error","temporarily_unavailable"]
+    let errors: [String] = ["invalid_request", "invalid_client", "invalid_callback", "invalid_grant", "unauthorized_client", "unauthorized", "unsupported_grant_type", "invalid_scope", "access_denied", "unsupported_response_type", "server_error", "temporarily_unavailable"]
     
     override func setUp() {
         super.setUp()
@@ -26,7 +26,7 @@ class AuthenticatorTest: XCTestCase {
     func testAuthenticateWithClientSuccess() {
         let accessToken = "a05a793c-9d80-4221-a99d-ad473ccd1989"
         let config = makeConfig()
-        var body = [String : Any]()
+        var body = [String: Any]()
         body["access_token"] = accessToken
         body["token_type"] = "bearer"
         body["expires_in"] = 600
@@ -55,7 +55,7 @@ class AuthenticatorTest: XCTestCase {
     func testAuthenticateWithClientScopesSuccess() {
         let accessToken = "a05a793c-9d80-4221-a99d-ad473ccd1989"
         let config = makeConfig(scopesAndHeader: true)
-        var body = [String : Any]()
+        var body = [String: Any]()
         body["access_token"] = accessToken
         body["token_type"] = "bearer"
         body["expires_in"] = 600
@@ -85,7 +85,7 @@ class AuthenticatorTest: XCTestCase {
         let accessToken = "a05a793c-9d80-4221-a99d-ad473ccd1989"
         let refreshToken = "a05a793c-ad473ccd19-899d80-4221-a99d"
         let config = makeConfig()
-        var body = [String : Any]()
+        var body = [String: Any]()
         body["access_token"] = accessToken
         body["refresh_token"] = refreshToken
         body["token_type"] = "bearer"
@@ -122,7 +122,7 @@ class AuthenticatorTest: XCTestCase {
     func testAuthenticateWithClientSuccessExpiredToken() {
         let accessToken = "a05a793c-9d80-4221-a99d-ad473ccd1989"
         let config = makeConfig()
-        var body = [String : Any]()
+        var body = [String: Any]()
         body["access_token"] = accessToken
         body["token_type"] = "bearer"
         body["expires_in"] = 100 // expired
@@ -154,11 +154,10 @@ class AuthenticatorTest: XCTestCase {
         wait(for: [tokenExpectation], timeout: 10.0)
     }
     
-    
     func testAuthenticateWithClientFailsWrongData() {
         let accessToken = "a05a793c-9d80-4221-a99d-ad473ccd1989"
         let config = makeConfig()
-        var body = [String : Any]()
+        var body = [String: Any]()
         body["access_tok"] = accessToken
         body["token_type"] = "bearer"
         body["expires_in"] = 989
@@ -171,7 +170,7 @@ class AuthenticatorTest: XCTestCase {
             XCTAssertFalse(success)
             XCTAssertNotNil(error)
             
-            if let e = error, e.kind == OAuth2Error.ErrorKind.fromString("unsupported_response_type"){
+            if let e = error, e.kind == OAuth2Error.ErrorKind.fromString("unsupported_response_type") {
                 XCTAssert(true)
             } else {
                 XCTFail("eror")
@@ -191,7 +190,7 @@ class AuthenticatorTest: XCTestCase {
             XCTAssertFalse(success)
             XCTAssertNotNil(error)
             
-            if let e = error, e.kind == OAuth2Error.ErrorKind.fromString("internal_error"){
+            if let e = error, e.kind == OAuth2Error.ErrorKind.fromString("internal_error") {
                 XCTAssert(true)
             } else {
                 XCTFail("eror")
@@ -200,14 +199,13 @@ class AuthenticatorTest: XCTestCase {
         }
         wait(for: [authExpectation], timeout: 10.0)
         
-        
     }
     
     func testAuthenticateWithClientFailsWithOAuthErrors() {
         let config = makeConfig()
         
-        for e in errors{
-            var body = [String : Any]()
+        for e in errors {
+            var body = [String: Any]()
             let kind = OAuth2Error.ErrorKind.fromString(e)
             body["error"] = e
             body["error_description"] = "bla"
@@ -220,7 +218,7 @@ class AuthenticatorTest: XCTestCase {
                 XCTAssertFalse(success)
                 XCTAssertNotNil(error)
                 
-                if let e = error, e.kind == kind{
+                if let e = error, e.kind == kind {
                     XCTAssert(true)
                 } else {
                     XCTFail("eror")
@@ -239,30 +237,29 @@ class AuthenticatorTest: XCTestCase {
         }
     }
     
-    private func makeAuthenticator(response: HTTPURLResponse?, responseData: Data?, error: Error?, config: OAuth2Config) -> Authenticator{
+    private func makeAuthenticator(response: HTTPURLResponse?, responseData: Data?, error: Error?, config: OAuth2Config) -> Authenticator {
         
         config.session = URLSessionMock(data: responseData, response: response, error: error)
         let authenticator = Authenticator(config: config)
         return authenticator
     }
-    private func makeResponceData(data: [String:Any]) throws -> Data{
+    private func makeResponceData(data: [String: Any]) throws -> Data {
         let jsonData =  try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions())
         return jsonData
     }
-    private func makeResponce(config: OAuth2Config, statusCode: Int) -> HTTPURLResponse?{
+    private func makeResponce(config: OAuth2Config, statusCode: Int) -> HTTPURLResponse? {
         
         let response = HTTPURLResponse(url: config.tokenURL, statusCode: statusCode, httpVersion: nil, headerFields: nil)
         return response
     }
-    private func makeConfig(scopesAndHeader:Bool = false) -> OAuth2Config{
+    private func makeConfig(scopesAndHeader: Bool = false) -> OAuth2Config {
         if scopesAndHeader {
-            return OAuth2Config(tokenURL: URL(string:"https://dummy.com/oaut/token")!, clientID: "clientID", clientSecret: "clinetsecret")
+            return OAuth2Config(tokenURL: URL(string: "https://dummy.com/oaut/token")!, clientID: "clientID", clientSecret: "clinetsecret")
         } else {
-            return OAuth2Config(tokenURL: URL(string:"https://dummy.com/oaut/token")!, clientID: "clientID", clientSecret: "clinetsecret", additionalHeader: ["tenant":"A"], scopes: ["ScopeA", "ScopeB"], timeout: 0)
+            return OAuth2Config(tokenURL: URL(string: "https://dummy.com/oaut/token")!, clientID: "clientID", clientSecret: "clinetsecret", additionalHeader: ["tenant": "A"], scopes: ["ScopeA", "ScopeB"], timeout: 0)
         }
     }
 }
-
 
 /*
  400

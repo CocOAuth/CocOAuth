@@ -8,14 +8,14 @@
 
 import Foundation
 
-open class Authenticator{
+open class Authenticator {
     
-    public typealias AuthenticationCompletionHandler = (Bool, OAuth2Error?) -> ()
-    public typealias AccessTokenCompletionHandler = (String?, OAuth2Error?) -> ()
+    public typealias AuthenticationCompletionHandler = (Bool, OAuth2Error?) -> Void
+    public typealias AccessTokenCompletionHandler = (String?, OAuth2Error?) -> Void
     
-    let config:OAuth2Config
-    let client:OAuth2Client
-    var tokenResult : TokenResult?
+    let config: OAuth2Config
+    let client: OAuth2Client
+    var tokenResult: TokenResult?
     
     private let mutex = PThreadMutex()
     private var completionHandlerQueue: [AccessTokenCompletionHandler] = []
@@ -26,7 +26,7 @@ open class Authenticator{
         case timeOutError
         case technicalError
     }
-    public init(config:OAuth2Config){
+    public init(config: OAuth2Config) {
         self.config = config
         client = OAuth2Client(config: config)
     }
@@ -37,12 +37,12 @@ open class Authenticator{
      *
      * @param AuthenticationCompletionHandler block
      */
-    open func authenticateWithClientCredentials(handler : @escaping AuthenticationCompletionHandler) -> Void {
+    open func authenticateWithClientCredentials(handler : @escaping AuthenticationCompletionHandler) {
         
         let credentials = Credentials(clientID: config.clientID, clientSecret: config.clientSecret)
         client.requestOAuthTokenWithCredentials(credentials, handler: { (result, error) in
             
-            if(error == nil){
+            if error == nil {
                 self.tokenResult = result
                 DispatchQueue.main.async {
                     handler(true, error)
@@ -63,12 +63,12 @@ open class Authenticator{
     * @paramter password the OAuth2 password
     * @param AuthenticationCompletionHandler block
     */
-    open func authenticateWithUsername(_ username:String,password :String, handler : @escaping AuthenticationCompletionHandler) -> Void {
+    open func authenticateWithUsername(_ username: String, password: String, handler : @escaping AuthenticationCompletionHandler) {
         
         let ropc = ROPCCredentials(clientID: config.clientID, clientSecret: config.clientSecret, username: username, password: password)
         client.requestOAuthTokenWithCredentials(ropc, handler: { (result, error) in
             
-            if(error == nil){
+            if error == nil {
                 self.tokenResult = result
                 DispatchQueue.main.async {
                     handler(true, error)
@@ -87,17 +87,16 @@ open class Authenticator{
      This method refresh the access token automatically, if the token is expired.
      This method is asynchronous.
      */
-    open func retrieveAccessToken(handler : @escaping AccessTokenCompletionHandler){
+    open func retrieveAccessToken(handler : @escaping AccessTokenCompletionHandler) {
         
         let validAccessToken = isAccessTokenValid()
     
-        if(validAccessToken.valid){
+        if validAccessToken.valid {
             DispatchQueue.main.async {
                 handler(validAccessToken.accessToken, nil)
             }
             return
-        }
-        else{
+        } else {
             
             if let credential = client.credentialsStore.loadCredentials() {
                 mutex.sync(execute: { [weak self] () -> Void in
@@ -130,7 +129,7 @@ open class Authenticator{
     /**
      * app access token is not valid
      */
-    open func invalidateAuthToken(){
+    open func invalidateAuthToken() {
         
     }
     
@@ -140,21 +139,21 @@ open class Authenticator{
      *
      * This should be called when the user explicitly signs off from your app.
      */
-    open func signOff(){
+    open func signOff() {
         
     }
     
-    func isAccessTokenValid() -> (valid:Bool, accessToken:String){
-        if let tr = tokenResult{
+    func isAccessTokenValid() -> (valid: Bool, accessToken: String) {
+        if let tr = tokenResult {
             let accessToken = tr.accessToken
             let date = Date()
             let currentTime = date.timeIntervalSince1970
-            if currentTime - tr.timestamp < tr.expiresIn{
-                return (true,accessToken)
+            if currentTime - tr.timestamp < tr.expiresIn {
+                return (true, accessToken)
             }
             
         }
-        return (false,"")
+        return (false, "")
 
     }
 }

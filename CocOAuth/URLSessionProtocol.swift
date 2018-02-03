@@ -16,7 +16,7 @@ public protocol URLSessionProtocol {
 
 extension URLSession: URLSessionProtocol {}
 
-public final class URLSessionMock : URLSessionProtocol {
+public final class URLSessionMock: URLSessionProtocol {
     
     var url: URL?
     var request: URLRequest?
@@ -27,18 +27,18 @@ public final class URLSessionMock : URLSessionProtocol {
         dataTaskMock.taskResponse = (data, response, error)
     }
     
-    public func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask{
+    public func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask {
         self.url = url
         self.dataTaskMock.completionHandler = completionHandler
         return self.dataTaskMock
     }
-    public func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask{
+    public func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask {
         self.request = request
         self.dataTaskMock.completionHandler = completionHandler
         return self.dataTaskMock
     }
     
-    final private class URLSessionDataTaskMock : URLSessionDataTask {
+    final private class URLSessionDataTaskMock: URLSessionDataTask {
         
         typealias CompletionHandler = (Data?, URLResponse?, Error?) -> Void
         var completionHandler: CompletionHandler?
