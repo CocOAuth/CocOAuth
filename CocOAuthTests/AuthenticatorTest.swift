@@ -43,6 +43,11 @@ class AuthenticatorTest: XCTestCase {
     }
     
     private func makeAuthenticator() -> Authenticator{
+        OAuth2Config(tokenURL: URL(string:"https://dummy.com/oaut/token")!, clientID: "clientID", clientSecret: "clinetsecret",
+                     additionalHeader: <>,
+                     scopes: ["read", "modify"],
+                     timeout: 20)
+        
         let config = OAuth2Config(tokenURL: URL(string:"https://dummy.com/oaut/token")!, clientID: "clientID", clientSecret: "clinetsecret")
         let responseString = "{\"login\": \"dasdom\", \"id\": 1234567}"
         let response = HTTPURLResponse(url: config.tokenURL, statusCode: 400, httpVersion: nil, headerFields: nil)
