@@ -12,7 +12,7 @@ internal typealias OAut2hCompletionHandler = (TokenResult?, OAuth2Error?) -> Voi
 
 internal class OAuth2Client {
     
-    let config: OAuth2Config
+    var config: OAuth2Config?
     
     let credentialsStore: CredentialsStore
     let session: URLSessionProtocol
@@ -100,8 +100,14 @@ internal class OAuth2Client {
     }
     // MARK: mark - private methods
     func requestOAuthTokenWithBody(clientID: String, clientSecret: String, body: String, handler: @escaping OAut2hCompletionHandler) {
-    
-        let request = NSMutableURLRequest(url: config.tokenURL)
+        
+        guard let cfg =  config else {
+            let err = OAuth2Error(errorMessage: "no config", kind: .internalError, error: nil)
+            handler(nil, err)
+            return
+        }
+        
+        let request = NSMutableURLRequest(url: cfg.tokenURL)
         
         // Authorization header with client credentials
         
@@ -110,8 +116,8 @@ internal class OAuth2Client {
         request.addValue("application/x-www-form-urlencoded;charset=UTF-8", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         
-        for key in config.additionalHeader.keys {
-            if let val = config.additionalHeader[key] {
+        for key in cfg.additionalHeader.keys {
+            if let val = cfg.additionalHeader[key] {
                 request.addValue(val, forHTTPHeaderField: key)
             }
         }
@@ -119,7 +125,7 @@ internal class OAuth2Client {
         request.httpMethod = "POST"
         
         var requestBody = body
-        if let scopes = config.scopes {
+        if let scopes = cfg.scopes {
             if !scopes.isEmpty {
                 let scopeBody = scopes.joined(separator: " ")
                 requestBody += "&scope="

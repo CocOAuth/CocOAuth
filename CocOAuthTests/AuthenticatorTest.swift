@@ -230,6 +230,48 @@ class AuthenticatorTest: XCTestCase {
         
     }
     
+    func testSignOff() {
+        let accessToken = "a05a793c-9d80-4221-a99d-ad473ccd1989"
+        let config = makeConfig()
+        var body = [String: Any]()
+        body["access_token"] = accessToken
+        body["token_type"] = "bearer"
+        body["expires_in"] = 600
+        
+        let data = try! makeResponceData(data: body)
+        let authenticator = makeAuthenticator(response: makeResponce(config: config, statusCode: 200), responseData: data, error: nil, config: config)
+        
+        let authExpectation = XCTestExpectation(description: "authenticate")
+        authenticator.authenticateWithClientCredentials { (success, error) in
+            XCTAssert(success)
+            XCTAssertNil(error)
+            authExpectation.fulfill()
+        }
+        wait(for: [authExpectation], timeout: 10.0)
+        
+        let atoken = authenticator.tokenResult?.accessToken
+        XCTAssertEqual(accessToken, atoken)
+        authenticator.signOff()
+        XCTAssertNil(authenticator.tokenResult)
+        XCTAssertNil(authenticator.client.credentialsStore.loadCredentials())
+        
+        let authExpectation2 = XCTestExpectation(description: "authenticate2")
+        authenticator.authenticateWithClientCredentials { (success, error) in
+            XCTAssertFalse(success)
+            XCTAssertNotNil(error)
+            
+            if let e = error, e.kind == OAuth2Error.ErrorKind.fromString("internal_error") {
+                XCTAssert(true)
+            } else {
+                XCTFail("eror")
+            }
+            authExpectation2.fulfill()
+        }
+        wait(for: [authExpectation2], timeout: 10.0)
+        XCTAssertNil(authenticator.client.credentialsStore.loadCredentials())
+        
+    }
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {

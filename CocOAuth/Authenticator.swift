@@ -140,7 +140,9 @@ open class Authenticator {
      * This should be called when the user explicitly signs off from your app.
      */
     open func signOff() {
-        
+        tokenResult = nil
+        client.credentialsStore.removeCredentials()
+        client.config = nil
     }
     
     func isAccessTokenValid() -> (valid: Bool, accessToken: String) {

@@ -12,5 +12,6 @@ public protocol CredentialsStore {
     
     func storeCredentials(_ credentials: Credentials)
     func loadCredentials() -> Credentials?
+    func removeCredentials()
     
 }

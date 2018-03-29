@@ -18,4 +18,7 @@ class InMemoryCredentialsStore: CredentialsStore {
     func storeCredentials(_ credentials: Credentials) {
         internalStore = credentials
     }
+    func removeCredentials() {
+        internalStore = nil
+    }
 }
