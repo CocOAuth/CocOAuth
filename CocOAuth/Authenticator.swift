@@ -118,7 +118,7 @@ open class Authenticator {
                     }
                 })
             } else {
-                let error = OAuth2Error(errorMessage: "no credentials available", kind: .unauthorized, error: nil)
+                let error = OAuth2Error(errorMessage: "no credentials available", kind: .unauthorized("5002"), error: nil)
                 DispatchQueue.main.async {
                     handler(nil, error)
                 }

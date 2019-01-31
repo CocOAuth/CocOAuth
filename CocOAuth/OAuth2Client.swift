@@ -222,13 +222,18 @@ internal class OAuth2Client {
                         errorCode = eCode
                     }
                     var errorDescription = ""
+                    var subCode: String?
                     if let eDescription = jsonDic["error_description"] as? String {
                         errorDescription = eDescription
                     } else if let eMessage = jsonDic["message"] as? String {
                         errorDescription = eMessage
                     }
+                    
+                    if let code = jsonDic["detailedErrorCode"] as? String {
+                        subCode = code
+                    }
                     print(errorCode)
-                    error = OAuth2Error(errorMessage: errorDescription, kind: OAuth2Error.ErrorKind.fromString(errorCode), error: nil)
+                    error = OAuth2Error(errorMessage: errorDescription, kind: OAuth2Error.ErrorKind.fromString(errorCode, subCode: subCode), error: nil)
                 }
             } catch let err {
                 error = OAuth2Error(errorMessage: "unable to parse the payload", kind: .unsupportedResponseType, error: err)

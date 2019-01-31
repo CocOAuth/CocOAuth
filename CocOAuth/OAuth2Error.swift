@@ -9,13 +9,13 @@
 import Foundation
 
 public struct OAuth2Error: Error {
-    public enum ErrorKind {
+    public enum ErrorKind: Equatable {
         case invalidRequest
         case invalidClient
         case invalidCallback
         case invalidGrant
         case unauthorizedClient
-        case unauthorized
+        case unauthorized(String?)
         case unsupportedGrantType
         case invalidScope
         case accessDenied
@@ -24,7 +24,7 @@ public struct OAuth2Error: Error {
         case temporarilyUnavailable
         case internalError
         
-        static func fromString(_ errorCode: String) -> ErrorKind {
+        static func fromString(_ errorCode: String, subCode: String? = nil) -> ErrorKind {
             var error = ErrorKind.internalError
             switch errorCode.lowercased() {
                 
@@ -39,7 +39,7 @@ public struct OAuth2Error: Error {
             case "unauthorized_client":
                 error = unauthorizedClient
             case "unauthorized":
-                error = unauthorized
+                error = unauthorized(subCode)
             case "unsupported_grant_type":
                 error = unsupportedGrantType
             case "invalid_scope":
@@ -58,6 +58,17 @@ public struct OAuth2Error: Error {
                 error = internalError
             }
             return error
+        }
+        public static func ==(ek1: ErrorKind, ek2: ErrorKind) -> Bool {
+            switch (ek1, ek2) {
+            case (let .unauthorized(a1), let .unauthorized(a2)):
+                return a1 == a2
+            case (.invalidRequest, .invalidRequest), (.invalidClient, .invalidClient) ,(.invalidCallback, .invalidCallback), (.unauthorizedClient,.unauthorizedClient), (.unsupportedGrantType,.unsupportedGrantType), (.invalidScope,.invalidScope),(.accessDenied,.accessDenied), (.unsupportedResponseType,.unsupportedResponseType), (.serverError,.serverError), (.temporarilyUnavailable,.temporarilyUnavailable), (.invalidGrant, .invalidGrant),(.internalError, .internalError):
+                return true
+
+            default:
+                return false
+            }
         }
     }
     

@@ -154,6 +154,8 @@ class AuthenticatorTest: XCTestCase {
         wait(for: [tokenExpectation], timeout: 10.0)
     }
     
+    
+    
     func testAuthenticateWithClientFailsWrongData() {
         let accessToken = "a05a793c-9d80-4221-a99d-ad473ccd1989"
         let config = makeConfig()
@@ -170,8 +172,15 @@ class AuthenticatorTest: XCTestCase {
             XCTAssertFalse(success)
             XCTAssertNotNil(error)
             
-            if let e = error, e.kind == OAuth2Error.ErrorKind.fromString("unsupported_response_type") {
-                XCTAssert(true)
+            if let e = error{
+                
+                switch e.kind {
+                case OAuth2Error.ErrorKind.unsupportedResponseType:
+                    XCTAssert(true)
+                default:
+                    XCTFail("eror")
+                }
+                
             } else {
                 XCTFail("eror")
             }
@@ -190,8 +199,14 @@ class AuthenticatorTest: XCTestCase {
             XCTAssertFalse(success)
             XCTAssertNotNil(error)
             
-            if let e = error, e.kind == OAuth2Error.ErrorKind.fromString("internal_error") {
-                XCTAssert(true)
+            if let e = error {
+                switch e.kind {
+                case OAuth2Error.ErrorKind.internalError:
+                    XCTAssert(true)
+                default:
+                    XCTFail("eror")
+                }
+    
             } else {
                 XCTFail("eror")
             }
@@ -218,15 +233,37 @@ class AuthenticatorTest: XCTestCase {
                 XCTAssertFalse(success)
                 XCTAssertNotNil(error)
                 
-                if let e = error, e.kind == kind {
-                    XCTAssert(true)
-                } else {
-                    XCTFail("eror")
-                }
+                XCTAssertEqual(error!.kind, kind)
+             
                 authExpectation.fulfill()
             }
             wait(for: [authExpectation], timeout: 10.0)
         }
+        
+    }
+    
+    func testAuthenticateFailsWithSubCodes() {
+        let config = makeConfig()
+        
+        var body = [String: Any]()
+        body["error"] = "unauthorized"
+        body["error_description"] = "bla"
+        body["detailedErrorCode"] = "5000"
+        
+        let data = try! makeResponceData(data: body)
+        let authenticator = makeAuthenticator(response: makeResponce(config: config, statusCode: 401), responseData: data, error: nil, config: config)
+        
+        let authExpectation = XCTestExpectation(description: "authenticate")
+        authenticator.authenticateWithClientCredentials { (success, error) in
+            XCTAssertFalse(success)
+            XCTAssertNotNil(error)
+            
+            XCTAssertEqual(error!.kind, OAuth2Error.ErrorKind.unauthorized("5000"))
+            
+            authExpectation.fulfill()
+        }
+        wait(for: [authExpectation], timeout: 10.0)
+        
         
     }
     
